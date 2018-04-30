@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Event Set for Interactions - A-Frame</title>
+  
+  <!-- AR.js by @jerome_etienne - github: https://github.com/jeromeetienne/ar.js - info: https://medium.com/arjs/augmented-reality-in-10-lines-of-html-4e193ea9fdbf -->
+  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.5/aframe/build/aframe-ar.js"></script>
+  <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.0/dist/aframe-extras.min.js"></script>
+  <script src="https://unpkg.com/aframe-event-set-component@^4.0.0/dist/aframe-event-set-component.min.js"></script>
+  <script>
+  var old = "0 0 0"
+  
+  function test() {
+    alert("test") 
+  }
+  
+  function genRand(temp) {
+      return (Math.random() * 1.5);
+  }
+    
+  AFRAME.registerComponent('position-interval', {
+    
+    tick: function (t) {
+      var text = document.querySelector("#ani");
+      var temp = ( text.attributes[2].value)
+      
+      
+      // Run on an interval.
+      if (t - this.time < 400) { return; } 
+      this.time = t;
+
+      // Calculate a position.
+      var position = genRand() + " " + genRand() + " " + genRand();
+      // Update position.
+      text.setAttribute("from", temp);
+      text.setAttribute("to", position);
+      text.setAttribute("dur","400");
+      
+    }
+    
+  });
+    
+AFRAME.registerComponent('click-event', {
+    init: function() {
+        el = this.el
+        var text = document.querySelector("#ani");
+
+        el.addEventListener('click', function () {
+          console.log('This 2D element was clicked!');
+        });
+    }
+});
+    
+  </script>
+  </head>
+  <body style="margin : 0px; overflow: hidden;" >
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" cursor="rayOrigin: mouse" >
+      <a-assets>
+      <a-asset-item id="tree" src="https://raw.githubusercontent.com/JSneak/assets/master/scene.gltf"></a-asset-item>
+      </a-assets>
+      <a-entity light="type: directional; color: #EEE; intensity: 400 distance: 100" position="-1 3 0"></a-entity> 
+      <a-entity gltf-model="#tree" scale=".001 .001 .001" position="0 0 0" animation-mixer position-interval click-event>
+
+      <a-animation 
+          id="ani"
+          attribute="position"
+          to="0 2 0"
+          repeat = "indefinite"
+          direction = "normal"
+          easing="ease">
+        </a-animation>
+        
+        
+      </a-entity>  <!-- right up forward
+<!--       <a-box position="0 0.5 0" material="opacity: 0.5;"></a-box> -->
+      
+    
+      
+      <a-marker-camera preset="hiro">
+        
+      </a-marker-camera>
+    </a-scene>
+  </body>
+
+
+</html>
